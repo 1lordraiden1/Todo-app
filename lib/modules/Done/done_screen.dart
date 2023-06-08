@@ -10,7 +10,7 @@ class DoneScreen extends StatefulWidget {
 class _DoneScreenState extends State<DoneScreen> {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text(
         "Done Tasks",style: TextStyle(
         fontSize: 30.0,
