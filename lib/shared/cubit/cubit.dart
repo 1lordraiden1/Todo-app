@@ -47,7 +47,7 @@ class cubit extends Cubit<states>{
         },
         onOpen:(DB) {
           getDB(DB).then((value){
-
+            print(value);
           });
           print("Database opened");
         }
@@ -71,7 +71,10 @@ class cubit extends Cubit<states>{
   Future<List<Map>> getDB(DB) async {
     DB.rawQuery(
         'SELECT * FROM tasks'
-    ).then((value) => tasks = value,
+    ).then((value){
+
+      tasks = value;
+      },
 
     ).catchError((err){
       print('Error on Selecting The records ${err.toString()}');

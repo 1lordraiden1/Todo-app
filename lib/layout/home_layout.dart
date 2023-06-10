@@ -28,7 +28,9 @@ class HomeLayout extends StatelessWidget {
 
       create: (BuildContext context) => cubit(),
       child: BlocConsumer<cubit,states >(
-        listener: (BuildContext context, state) {  },
+        listener: (BuildContext context, state) {
+
+        },
         builder: (BuildContext context, state) {
 
           cubit c = cubit.get(context);
