@@ -9,13 +9,23 @@ import 'package:todo_list/modules/task/task_screen.dart';
 import 'package:todo_list/shared/cubit/cubit.dart';
 import 'package:todo_list/shared/cubit/states.dart';
 
-Database? DB;
-
+bool isBottomSheet = false;
 
 class HomeLayout extends StatelessWidget {
+
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+  var formKey = GlobalKey<FormState>();
+  var titleController = TextEditingController();
+  var timeController = TextEditingController();
+  var dateController = TextEditingController();
+
+
+  String x = "0123456789";
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
+
       create: (BuildContext context) => cubit(),
       child: BlocConsumer<cubit,states >(
         listener: (BuildContext context, state) {  },
@@ -25,19 +35,122 @@ class HomeLayout extends StatelessWidget {
 
 
           return Scaffold(
+
+            key: scaffoldKey,
             appBar: AppBar(
               title: Text("Todo App"),
             ),
+
             body: c.pages[c.currentIndex],
             floatingActionButton: FloatingActionButton(
+
               onPressed: (){
 
+                if(isBottomSheet){
+                  if(formKey.currentState!.validate()){
+                    Navigator.pop(context);
+                    isBottomSheet = false;
+                  }
+                }
+                else{
+                  scaffoldKey.currentState?.showBottomSheet(
+                          (context) => Form(
+                            key: formKey,
+                            child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                            TextFormField(
+                              controller: titleController,
+
+                              validator: (dynamic value){
+                                if(value.toString().isEmpty) {
+                                  return 'Enter Title';
+                                }
+
+
+                              },
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+
+                                label: Text('Task title'),
+                                prefix: Icon(Icons.abc_outlined),
+
+                              ),
+
+                            ),
+                            TextFormField(
+                              controller: timeController,
+
+
+                              keyboardType: TextInputType.datetime,
+                              onTap: (){
+                                showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.now(),
+                                ).then((dynamic value){
+                                  timeController.text = value.format(context).toString();
+                                  print(value.format(context));
+                                });
+                              },
+                              validator: (dynamic value){
+                                if(value.toString().isEmpty) {
+                                  return 'Enter Time';
+                                }
+
+
+                              },
+
+
+                              decoration: InputDecoration(
+
+                                label: Text('Task Time'),
+                                prefix: Icon(Icons.watch_later_outlined,size: 25,),
+
+                              ),
+
+                            ),
+                            TextFormField(
+                              controller: dateController,
+
+                              validator: (dynamic value){
+                                if(value.toString().isEmpty) {
+                                  return 'Enter Date';
+                                }
+
+
+                              },
+                              onTap: (){
+                                showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2023),
+                                    lastDate: DateTime(2024)).then((value){
+                                      dateController.text = value.toString().substring(0,10);
+
+                                });
+                              },
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+
+                                label: Text('Task Date'),
+                                prefix: Icon(Icons.calendar_month_outlined),
+
+                              ),
+
+                            ),
+                        ],
+                      ),
+                          )
+                  );
+                  isBottomSheet = true;
+                }
               },
               child: Icon(
                 Icons.add,
               ),
 
             ),
+
             bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               currentIndex: c.currentIndex,
@@ -73,37 +186,6 @@ class HomeLayout extends StatelessWidget {
 
 
 
-void createDB() async
-{
-  DB = await openDatabase(
-    'todo.db',
-    version: 1,
-    onCreate: (DB,version) {
-      print("Database created");
-      DB.execute('CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, date TEXT,time TEXT,state TEXT)').then((value)
-      {
-        print("Table created");
-      }).catchError((error)
-      {
-        print("Error on Creating table");
-      });
-    },
-    onOpen:(DB) {
-      print("Database opened");
-    }
-  );
-}
 
-void insertinDB(){
-  DB?.transaction((txn)
-  {
-    txn.rawInsert('INSERT INTO tasks(title,date,time,state) VALUES("first task","20/10/23","10:30 pm","New")'
-    ).then((value) {
-      print('$value inserted successfully');
-    }).catchError((error)
-    {
-      print('Error on Inserting new record ${error.toString()}');
-    });
-    return Future(()async =>await null);
-  });
-}
+
+
