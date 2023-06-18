@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +12,7 @@ import '../../modules/task/task_screen.dart';
 
 late Database DB;
 
-class cubit extends Cubit<states>{
+class cubit extends Cubit<states> {
   cubit() : super(initState());
 
   static cubit get(context) => BlocProvider.of(context);
@@ -25,64 +27,63 @@ class cubit extends Cubit<states>{
     ArchiveScreen(),
   ];
 
-  void changeIndex(index){
+  void changeIndex(index) {
     currentIndex = index;
     emit(changeNavBarButton());
   }
 
   void createDB() async
   {
-    DB = await openDatabase(
+    openDatabase(
         'todo.db',
         version: 1,
-        onCreate: (DB,version) {
+        onCreate: (DB, version) {
           print("Database created");
-          DB.execute('CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, date TEXT,time TEXT,state TEXT)').then((value)
-          {
+          DB.execute(
+              'CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, date TEXT,time TEXT,state TEXT)')
+              .then((value) {
             print("Table created");
-          }).catchError((error)
-          {
+          }).catchError((error) {
             print("Error on Creating table");
           });
         },
-        onOpen:(DB) {
-          getDB(DB).then((value){
+        onOpen: (DB) {
+          /*getDB(DB).then((value) {
             print(value);
             print("Database opened");
             emit(CreateDBState());
-          });
+          });*/
           print("Database opened");
         }
-    );
+    ).then((value) {
+      emit(CreateDBState());
+    });
   }
 
-  void insertinDB(){
-    DB.transaction((txn)
-    {
-      txn.rawInsert('INSERT INTO tasks(title,date,time,state) VALUES("first task","20/10/23","10:30 pm","New")'
+  void insertinDB() {
+    DB.transaction((txn) {
+      txn.rawInsert(
+          'INSERT INTO tasks(title,date,time,state) VALUES("first task","20/10/23","10:30 pm","New")'
       ).then((value) {
         print('$value inserted successfully');
-      }).catchError((error)
-      {
+      }).catchError((error) {
         print('Error on Inserting new record ${error.toString()}');
       });
-      return Future(()async =>await null);
+      return Future(() async => await null);
     });
   }
 
   Future<List<Map>> getDB(DB) async {
     DB.rawQuery(
         'SELECT * FROM tasks'
-    ).then((value){
-
+    ).then((value) {
       tasks = value;
-      },
+    },
 
-    ).catchError((err){
+    ).catchError((err) {
       print('Error on Selecting The records ${err.toString()}');
     });
     return tasks;
-
   }
 
 }
