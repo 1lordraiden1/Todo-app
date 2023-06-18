@@ -32,7 +32,7 @@ class cubit extends Cubit<states> {
     emit(changeNavBarButton());
   }
 
-  void createDB() async
+  void createDB()
   {
     openDatabase(
         'todo.db',
