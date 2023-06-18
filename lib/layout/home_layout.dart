@@ -20,13 +20,13 @@ class HomeLayout extends StatelessWidget {
   var dateController = TextEditingController();
 
 
-  String x = "0123456789";
+
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
 
-      create: (BuildContext context) => cubit(),
+      create: (BuildContext context) => cubit()..createDB(),
       child: BlocConsumer<cubit,states >(
         listener: (BuildContext context, state) {
 

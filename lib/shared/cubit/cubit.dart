@@ -48,6 +48,8 @@ class cubit extends Cubit<states>{
         onOpen:(DB) {
           getDB(DB).then((value){
             print(value);
+            print("Database opened");
+            emit(CreateDBState());
           });
           print("Database opened");
         }
