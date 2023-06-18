@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 
-class TaskScreen extends StatefulWidget {
-  const TaskScreen({Key? key}) : super(key: key);
+class TaskScreen extends StatelessWidget {
 
-  @override
-  State<TaskScreen> createState() => _TaskScreenState();
-}
 
-class _TaskScreenState extends State<TaskScreen> {
+  List<Map> Tasks = [];
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "Tasks",style: TextStyle(
-        fontSize: 30.0,
-        fontWeight: FontWeight.bold,
+    return ListView.separated(
+      separatorBuilder: (BuildContext context, int index) => const SizedBox(
+        height: 10,
+      ),
+      itemCount: 2,
+      itemBuilder: (BuildContext context, int index) =>ListTile(
+        title:Text("Go to gym"),
+        subtitle: Text("12/12/2012"),
+        trailing: Text("02:00 AM"),
+      ),
 
-      ),
-      ),
     );
   }
+
+
 }
+
+
