@@ -56,7 +56,7 @@ class cubit extends Cubit<states> {
           print("Database opened");
         }
     ).then((value) {
-      emit(CreateDBState());
+      /*emit(CreateDBState());*/
     });
   }
 
